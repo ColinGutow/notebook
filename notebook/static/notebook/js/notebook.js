@@ -33,6 +33,7 @@ define([
     './scrollmanager',
     './commandpalette',
     './shortcuteditor',
+    './tinyMCECell',
 ], function (
     $,
     IPython,
@@ -60,7 +61,8 @@ define([
     tags_celltoolbar,
     scrollmanager,
     commandpalette,
-    shortcuteditor
+    shortcuteditor,
+    WYSIWYGCell
 ) {
 
     var ShortcutEditor = shortcuteditor.ShortcutEditor;
@@ -1314,6 +1316,9 @@ define([
                 break;
             case 'raw':
                 cell = new textcell.RawCell(cell_options);
+                break;
+            case 'WYSIWYGCell':
+                cell = new WYSIWYGCell.WYSIWYGCell(cell_options);
                 break;
             default:
                 console.log("Unrecognized cell type: ", type, cellmod);
