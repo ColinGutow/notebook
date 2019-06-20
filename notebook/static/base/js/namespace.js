@@ -65,6 +65,7 @@ define(function(){
     jglobal('MarkdownCell','notebook/js/textcell');
     jglobal('RawCell','notebook/js/textcell');
     jglobal('Cell','notebook/js/cell');
+    jglobal('WYSIWYGCell','notebook/js/TinyMCECell');
     jglobal('MainToolBar','notebook/js/maintoolbar');
     jglobal('NotebookNotificationArea','notebook/js/notificationarea');
     jglobal('NotebookTour', 'notebook/js/tour');
