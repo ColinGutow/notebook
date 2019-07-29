@@ -64,7 +64,6 @@ define(function(){
     jglobal('QuickHelp','notebook/js/quickhelp');
     jglobal('MarkdownCell','notebook/js/textcell');
     jglobal('RawCell','notebook/js/textcell');
-    jglobal('WYSIWYGCell','notebook/js/WYSIWYGCell');
     jglobal('Cell','notebook/js/cell');
     jglobal('MainToolBar','notebook/js/maintoolbar');
     jglobal('NotebookNotificationArea','notebook/js/notificationarea');
@@ -74,7 +73,7 @@ define(function(){
     // tree
     jglobal('SessionList','tree/js/sessionlist');
 
-    Jupyter.version = "7.0.0.dev0";
+    Jupyter.version = "6.0.0.dev0";
     Jupyter._target = '_blank';
 
     return Jupyter;

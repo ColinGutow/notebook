@@ -234,7 +234,6 @@ define([
                     that.select('select-all');
                 }
             });
-
             $('#button-select-all').click(function (e) {
                 // toggle checkbox if the click doesn't come from the checkbox already
                 if (!$(e.target).is('input[type=checkbox]')) {
@@ -387,7 +386,6 @@ define([
         var root = $('<li/>').append(
             $("<a/>")
             .attr('href', root_url)
-            .attr('title', i18n.msg._('Link to root folder'))
             .append(
                 $("<i/>")
                 .addClass('fa fa-folder')
@@ -565,27 +563,15 @@ define([
             .addClass("item_name")
             .appendTo(link);
 
-        var div = $('<div/>')
-            .addClass('pull-right')
-            .appendTo(item);
-
-        var buttons = $('<div/>')
-            .addClass("item_buttons pull-left")
-            .appendTo(div);
-
-        var div2 = $('<div/>')
-            .addClass('pull-right')
-            .appendTo(div);
-
-        $("<span/>")
-            .addClass("item_modified")
-            .addClass("pull-left")
-            .appendTo(div2);
-
         $("<span/>")
             .addClass("file_size")
             .addClass("pull-right")
-            .appendTo(div2);
+            .appendTo(item);
+
+        $("<span/>")
+            .addClass("item_modified")
+            .addClass("pull-right")
+            .appendTo(item);
 
         if (selectable === false) {
             checkbox.css('visibility', 'hidden');
@@ -599,6 +585,10 @@ define([
                 that._selection_changed();
             });
         }
+
+        var buttons = $('<div/>')
+            .addClass("item_buttons  pull-right")
+            .appendTo(item);
 
         $('<div/>')
             .addClass('running-indicator')
@@ -820,23 +810,6 @@ define([
         checked = bidi.applyBidi(checked);
         $('#counter-select-all').html(checked===0 ? '&nbsp;' : checked);
 
-        //#issue 3961, update the checkbox aria-label when it changed
-        if(selected.length>=1){
-          if($('#select-all').prop("checked")){
-            // $('#button-select-all').attr("aria-label", i18n.msg._("Selected All "+ selected.length +" items"));
-            var msg1 = i18n.msg._("Selected All %d items")
-            $('#button-select-all').attr("aria-label", i18n.msg.sprintf(msg1, selected.length));
-          }
-          else{
-            // $('#button-select-all').attr("aria-label", i18n.msg._("Selected, "+ selected.length+" items"));
-            var msg2 = i18n.msg._("Selected, %d items")
-            $('#button-select-all').attr("aria-label", i18n.msg.sprintf(msg2, selected.length));
-          }
-        }
-        else{
-          $('#button-select-all').attr("aria-label", i18n.msg._("Select All/None"));
-        }
-
         // If at aleast on item is selected, hide the selection instructions.
         if (checked > 0) {
             $('.dynamic-instructions').hide();
@@ -982,11 +955,7 @@ define([
         var item_path = this.selected[0].path;
         var item_name = this.selected[0].name;
         var item_type = this.selected[0].type;
-        var input = $('<input/>')
-            .attr('type','text')
-            .attr('size','25')
-            .attr('aria-labelledby','rename-message')
-            .addClass('form-control')
+        var input = $('<input/>').attr('type','text').attr('size','25').addClass('form-control')
             .val(item_name);
         var rename_msg = function (type) {
         	switch(type) {
@@ -1006,7 +975,6 @@ define([
         };
         var dialog_body = $('<div/>').append(
             $("<p/>").addClass("rename-message")
-                .attr('id', 'rename-message')
                 .text(rename_msg(item_type))
         ).append(
             $("<br/>")
@@ -1079,10 +1047,10 @@ define([
         }
 
         // Open a dialog to enter the new path, with current path as default.
-        var input = $('<input/>').attr('type','text').attr('size','25').attr('aria-labelledby','move-message').addClass('form-control')
+        var input = $('<input/>').attr('type','text').attr('size','25').addClass('form-control')
             .val(utils.url_path_join('/', that.notebook_path));
         var dialog_body = $('<div/>').append(
-            $("<p/>").addClass("rename-message").attr('id', 'move-message')
+            $("<p/>").addClass("rename-message")
                 .text(i18n.msg.sprintf(i18n.msg.ngettext("Enter a new destination directory path for this item:",
                 					"Enter a new destination directory path for these %d items:", num_items),num_items))
         ).append(

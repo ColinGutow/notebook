@@ -388,8 +388,7 @@ class FileContentsManager(FileManagerMixin, ContentsManager):
         os_path = self._get_os_path(path)
         
         if content:
-            self.log.info('About to validate in filemanager.py _notebook_model()')
-            nb = self._read_notebook(os_path, as_version=5)
+            nb = self._read_notebook(os_path, as_version=4)
             self.mark_trusted_cells(nb, path)
             model['content'] = nb
             model['format'] = 'json'
@@ -467,7 +466,6 @@ class FileContentsManager(FileManagerMixin, ContentsManager):
 
         try:
             if model['type'] == 'notebook':
-                self.log.info('entering filemanager.py save() for notebook')
                 nb = nbformat.from_dict(model['content'])
                 self.check_and_sign(nb, path)
                 self._save_notebook(os_path, nb)
@@ -489,7 +487,6 @@ class FileContentsManager(FileManagerMixin, ContentsManager):
 
         validation_message = None
         if model['type'] == 'notebook':
-            self.log.info('Second validation check in filmanager.py save()')
             self.validate_notebook_model(model)
             validation_message = model.get('message', None)
 

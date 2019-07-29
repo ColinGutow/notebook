@@ -15,7 +15,6 @@ define([
     './cell',
     './textcell',
     './codecell',
-    './WYSIWYGCell',
     'moment',
     'services/config',
     'services/sessions/session',
@@ -44,7 +43,6 @@ define([
     cellmod,
     textcell,
     codecell,
-    WYSIWYGCell,
     moment,
     configmod,
     session,
@@ -170,7 +168,7 @@ define([
         this.paste_enabled = false;
         this.paste_attachments_enabled = false;
         this.writable = false;
-        // It is important to start out in command mode to match the initial mode
+        // It is important to start out in command mode to match the intial mode
         // of the KeyboardManager.
         this.mode = 'command';
         this.set_dirty(false);
@@ -183,8 +181,8 @@ define([
         // autosave *at most* every two minutes
         this.minimum_autosave_interval = 120000;
         this.notebook_name_blacklist_re = /[\/\\:]/;
-        this.nbformat = 5; // Increment this when changing the nbformat
-        this.nbformat_minor = this.current_nbformat_minor = 0; // Increment this when changing the nbformat
+        this.nbformat = 4; // Increment this when changing the nbformat
+        this.nbformat_minor = this.current_nbformat_minor = 1; // Increment this when changing the nbformat
         this.codemirror_mode = 'text';
         this.create_elements();
         this.bind_events();
@@ -1136,7 +1134,6 @@ define([
         var cell = this.get_cell(i);
 
         $('#undelete_cell').addClass('disabled');
-        $('#undelete_cell > a').attr('aria-disabled','true');
         if (this.is_valid_cell_index(i)) {
             var old_ncells = this.ncells();
             var ce = this.get_cell_element(i);
@@ -1216,7 +1213,7 @@ define([
         // where they came from. It will do until we have proper undo support.
         undelete_backup.index = cursor_ix_after;
         $('#undelete_cell').removeClass('disabled');
-        $('#undelete_cell > a').attr('aria-disabled','false');
+
         this.undelete_backup_stack.push(undelete_backup);
         this.set_dirty(true);
 
@@ -1259,7 +1256,6 @@ define([
         }
         if (this.undelete_backup_stack.length === 0) {
             $('#undelete_cell').addClass('disabled');
-            $('#undelete_cell > a').attr('aria-disabled','true');
         }
     };
 
@@ -1318,9 +1314,6 @@ define([
                 break;
             case 'raw':
                 cell = new textcell.RawCell(cell_options);
-                break;
-            case 'WYSIWYG':
-                cell = new WYSIWYGCell.WYSIWYGCell(cell_options);
                 break;
             default:
                 console.log("Unrecognized cell type: ", type, cellmod);
@@ -1625,15 +1618,12 @@ define([
             $('#paste_cell_replace').removeClass('disabled')
                 .on('click', function () {that.keyboard_manager.actions.call(
                     'jupyter-notebook:paste-cell-replace');});
-            $('#paste_cell_replace > a').attr('aria-disabled', 'false'); 
             $('#paste_cell_above').removeClass('disabled')
                 .on('click', function () {that.keyboard_manager.actions.call(
                     'jupyter-notebook:paste-cell-above');});
-            $('#paste_cell_above > a').attr('aria-disabled', 'false'); 
             $('#paste_cell_below').removeClass('disabled')
                 .on('click', function () {that.keyboard_manager.actions.call(
                     'jupyter-notebook:paste-cell-below');});
-            $('#paste_cell_below > a').attr('aria-disabled', 'false');         
             this.paste_enabled = true;
         }
     };
@@ -1644,11 +1634,8 @@ define([
     Notebook.prototype.disable_paste = function () {
         if (this.paste_enabled) {
             $('#paste_cell_replace').addClass('disabled').off('click');
-            $('#paste_cell_replace > a').attr('aria-disabled', 'true'); 
             $('#paste_cell_above').addClass('disabled').off('click');
-            $('#paste_cell_above > a').attr('aria-disabled', 'true'); 
             $('#paste_cell_below').addClass('disabled').off('click');
-            $('#paste_cell_below > a').attr('aria-disabled', 'true'); 
             this.paste_enabled = false;
         }
     };
@@ -1866,7 +1853,7 @@ define([
         var that = this;
         var cell = this.get_selected_cell();
         // The following should not happen as the menu item is greyed out
-        // when those conditions are not fulfilled (see MarkdownCell
+        // when those conditions are not fullfilled (see MarkdownCell
         // unselect/select/unrender handlers)
         if (cell.cell_type !== 'markdown') {
             console.log('Error: insert_image called on non-markdown cell');
@@ -1937,7 +1924,6 @@ define([
     Notebook.prototype.disable_attachments_paste = function () {
         if (this.paste_attachments_enabled) {
             $('#paste_cell_attachments').addClass('disabled');
-            $('#paste_cell_attachments > a').attr('disabled','true');
             this.paste_attachments_enabled = false;
         }
     };
@@ -1948,7 +1934,6 @@ define([
     Notebook.prototype.enable_attachments_paste = function () {
         if (!this.paste_attachments_enabled) {
             $('#paste_cell_attachments').removeClass('disabled');
-            $('#paste_cell_attachments > a').attr('aria-disabled','false');
             this.paste_attachments_enabled = true;
         }
     };
@@ -1959,10 +1944,8 @@ define([
     Notebook.prototype.set_insert_image_enabled = function(enabled) {
         if (enabled) {
             $('#insert_image').removeClass('disabled');
-            $('#insert_image > a').attr('aria-disabled', 'false');
         } else {
             $('#insert_image').addClass('disabled');
-            $('#insert_image > a').attr('aria-disabled', 'true');
         }
     };
 
@@ -2990,7 +2973,7 @@ define([
     /**
      * Explicitly trust the output of this notebook.
      */
-    Notebook.prototype.trust_notebook = function (from_notification) {
+    Notebook.prototype.trust_notebook = function () {
         var body = $("<div>").append($("<p>")
             .text(i18n.msg._("A trusted Jupyter notebook may execute hidden malicious code when you open it. " +
                     "Selecting trust will immediately reload this notebook in a trusted state. " +
@@ -3006,7 +2989,6 @@ define([
             keyboard_manager: this.keyboard_manager,
             title: i18n.msg._("Trust this notebook?"),
             body: body,
-            focus_button: from_notification,
 
             buttons: {
                 Cancel : {},
